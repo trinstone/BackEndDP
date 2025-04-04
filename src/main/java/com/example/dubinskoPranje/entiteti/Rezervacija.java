@@ -3,32 +3,42 @@ package com.example.dubinskoPranje.entiteti;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 
+@Entity
+@Table
 public class Rezervacija {
+
     @Id
+    @SequenceGenerator(
+            name = "rezervacija_sequence",
+            sequenceName = "rezervacija_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "rezervacija_sequence"
+    )
     private Long id;
+
     private LocalDateTime datumVreme;
     private String adresa;
+
     @ManyToOne
     @JoinColumn(name = "klijent_id")  // Name of the foreign key column
     private Klijent klijent;
+
     @ElementCollection
     @CollectionTable(name = "rezervacija_usluga", joinColumns = @JoinColumn(name = "rezervacija_id"))
     @Column(name = "usluga_id")
     private List<Long> usluge;  // List of ids of VrsteUsluga
+
     private String napomena;
 
-    public Rezervacija(Long id, LocalDateTime datumVreme,
-                       String adresa, Klijent klijent, List<Long> usluge, String napomena) {
+    @Version
+    private int version;
+
+    public Rezervacija(Long id, LocalDateTime datumVreme, String adresa, Klijent klijent, List<Long> usluge, String napomena) {
         this.id = id;
         this.datumVreme = datumVreme;
         this.adresa = adresa;
@@ -37,8 +47,7 @@ public class Rezervacija {
         this.napomena = napomena;
     }
 
-    public Rezervacija(LocalDateTime datumVreme,
-                       String napomena, String adresa, Klijent klijent, List<Long> usluge) {
+    public Rezervacija(LocalDateTime datumVreme, String napomena, String adresa, Klijent klijent, List<Long> usluge) {
         this.datumVreme = datumVreme;
         this.napomena = napomena;
         this.adresa = adresa;

@@ -1,13 +1,29 @@
 package com.example.dubinskoPranje.entiteti;
 
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
+@Entity
+@Table
 public class VrsteUsluga {
+
     @Id
+    @SequenceGenerator(
+            name = "usluga_sequence",
+            sequenceName = "usluga_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "usluga_sequence"
+    )
     private Long id;
+
     private String ime;
     private String opis;
     private Integer cena;
+
+    @Version
+    private int version;
 
     public VrsteUsluga(Long id, String ime, String opis, Integer cena) {
         this.id = id;
@@ -67,3 +83,4 @@ public class VrsteUsluga {
                 '}';
     }
 }
+

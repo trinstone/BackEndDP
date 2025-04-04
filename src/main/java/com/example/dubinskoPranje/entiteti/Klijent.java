@@ -1,15 +1,37 @@
 package com.example.dubinskoPranje.entiteti;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
+@Entity
+@Table
 public class Klijent {
+
     @Id
+    @SequenceGenerator(
+            name = "klijent_sequence",
+            sequenceName = "klijent_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "klijent_sequence"
+    )
     private Long id;
+
     private String ime;
     private String prezime;
     private String brTelefon;
     private String mejl;
     private String sifra;
+
+    @Version
+    private int version;
 
     public Klijent() {
     }
@@ -92,3 +114,4 @@ public class Klijent {
                 '}';
     }
 }
+

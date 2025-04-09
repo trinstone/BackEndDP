@@ -1,7 +1,7 @@
 package com.example.dubinskoPranje.slojevi.servisi;
 
 import com.example.dubinskoPranje.entiteti.Rezervacija;
-import com.example.dubinskoPranje.slojevi.repoi.RezervacijaRepo;  // Fixed import to use RezervacijaRepo
+import com.example.dubinskoPranje.slojevi.repoi.RezervacijaRepo;  // Correct import
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.Optional;
 @Service
 public class RezervacijaServis {
 
-    private final RezervacijaRepo rezervacijaRepo;  // Use RezervacijaRepo instead of RezervacijaRepository
+    private final RezervacijaRepo rezervacijaRepo;  // Correcting the variable name
 
     @Autowired
     public RezervacijaServis(RezervacijaRepo rezervacijaRepo) {  // Constructor injection
@@ -20,7 +20,7 @@ public class RezervacijaServis {
 
     // Get all Rezervacije
     public List<Rezervacija> getAllRezervacije() {
-        return rezervacijaRepo.findAll();  // Using rezervacijaRepo instead of rezervacijaRepository
+        return rezervacijaRepo.findAll();  // Using rezervacijaRepo
     }
 
     // Create a new Rezervacija
@@ -33,8 +33,8 @@ public class RezervacijaServis {
         Optional<Rezervacija> existingRezervacija = rezervacijaRepo.findById(id);  // Using rezervacijaRepo
         if (existingRezervacija.isPresent()) {
             Rezervacija existing = existingRezervacija.get();
-            existing.setKlijent(rezervacija.getKlijent());  // Assuming it's a Many-to-One relation
-            existing.setUsluge(rezervacija.getUsluge());  // Update usluga if applicable
+            existing.setKlijent(rezervacija.getKlijent());  // Update client
+            existing.setUsluge(rezervacija.getUsluge());  // Update services if applicable
             // Update other fields if needed
             return rezervacijaRepo.save(existing);  // Using rezervacijaRepo
         }
@@ -45,6 +45,9 @@ public class RezervacijaServis {
     public void deleteRezervacija(Long id) {
         rezervacijaRepo.deleteById(id);  // Using rezervacijaRepo
     }
+
+    // Get Rezervacije by Klijent ID
+    public List<Rezervacija> getRezervacijeByKlijentId(Long klijentId) {
+        return rezervacijaRepo.findByKlijentId(klijentId);  // Corrected method call
+    }
 }
-
-

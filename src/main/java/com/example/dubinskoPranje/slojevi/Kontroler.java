@@ -55,6 +55,18 @@ public class Kontroler {
 
     @PostMapping("/rezervacije")
     public Rezervacija createRezervacija(@RequestBody Rezervacija rezervacija) {
+        // Ensure Klijent is set correctly before saving the reservation
+        if (rezervacija.getKlijent() == null || rezervacija.getKlijent().getId() == null) {
+            throw new RuntimeException("Klijent ID is missing");
+        }
+
+        // Fetch Klijent using the ID provided
+        Klijent klijent = klijentServis.findKlijentById(rezervacija.getKlijent().getId());
+        if (klijent == null) {
+            throw new RuntimeException("Klijent not found with ID: " + rezervacija.getKlijent().getId());
+        }
+        rezervacija.setKlijent(klijent);  // Set the Klijent in the reservation object
+
         return rezervacijaServis.createRezervacija(rezervacija);
     }
 
@@ -66,6 +78,12 @@ public class Kontroler {
     @DeleteMapping("/rezervacije/{id}")
     public void deleteRezervacija(@PathVariable Long id) {
         rezervacijaServis.deleteRezervacija(id);
+    }
+
+    // Get reservations by client ID
+    @GetMapping("/rezervacije/klijent/{klijentId}")
+    public List<Rezervacija> getRezervacijeByKlijentId(@PathVariable Long klijentId) {
+        return rezervacijaServis.getRezervacijeByKlijentId(klijentId);
     }
 
     // ---------- VrsteUsluga Endpoints ----------
@@ -89,3 +107,4 @@ public class Kontroler {
         vrsteUslugaServis.deleteVrsteUsluga(id);
     }
 }
+

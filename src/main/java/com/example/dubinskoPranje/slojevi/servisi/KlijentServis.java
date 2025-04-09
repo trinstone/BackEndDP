@@ -23,6 +23,15 @@ public class KlijentServis {
         return klijentRepo.findAll();  // Using klijentRepo instead of klijentRepository
     }
 
+    // Get Klijent by ID (new method to fetch by ID)
+    public Klijent findKlijentById(Long id) {
+        Optional<Klijent> klijentOptional = klijentRepo.findById(id);
+        if (klijentOptional.isPresent()) {
+            return klijentOptional.get();
+        }
+        throw new RuntimeException("Klijent not found with id " + id);
+    }
+
     // Create a new Klijent
     public Klijent createKlijent(Klijent klijent) {
         return klijentRepo.save(klijent);  // Using klijentRepo
@@ -47,6 +56,3 @@ public class KlijentServis {
         klijentRepo.deleteById(id);  // Using klijentRepo
     }
 }
-
-
-

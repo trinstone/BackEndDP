@@ -107,4 +107,3 @@ public class Kontroler {
         vrsteUslugaServis.deleteVrsteUsluga(id);
     }
 }
-

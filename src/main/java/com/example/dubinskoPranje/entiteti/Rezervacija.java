@@ -30,7 +30,7 @@ public class Rezervacija {
     @ElementCollection
     @CollectionTable(name = "rezervacija_usluga", joinColumns = @JoinColumn(name = "rezervacija_id"))
     @Column(name = "usluga_id")
-    private List<Long> usluge;  // List of IDs of VrsteUsluga
+    private List<Long> uslugeIds;  // List of IDs of VrsteUsluga
 
     private String napomena;
 
@@ -45,22 +45,22 @@ public class Rezervacija {
     }
 
     // Constructor with all fields (including id)
-    public Rezervacija(Long id, LocalDateTime datumVreme, String adresa, Klijent klijent, List<Long> usluge, String napomena, int version) {
+    public Rezervacija(Long id, LocalDateTime datumVreme, String adresa, Klijent klijent, List<Long> uslugeIds, String napomena, int version) {
         this.id = id;
         this.datumVreme = datumVreme;
         this.adresa = adresa;
         this.klijent = klijent;
-        this.usluge = usluge;
+        this.uslugeIds = uslugeIds;
         this.napomena = napomena;
         this.version = version;
     }
 
     // Constructor without the 'id' field
-    public Rezervacija(LocalDateTime datumVreme, String adresa, Klijent klijent, List<Long> usluge, String napomena) {
+    public Rezervacija(LocalDateTime datumVreme, String adresa, Klijent klijent, List<Long> uslugeIds, String napomena) {
         this.datumVreme = datumVreme;
         this.adresa = adresa;
         this.klijent = klijent;
-        this.usluge = usluge;
+        this.uslugeIds = uslugeIds;
         this.napomena = napomena;
     }
 
@@ -97,12 +97,12 @@ public class Rezervacija {
         this.klijent = klijent;
     }
 
-    public List<Long> getUsluge() {
-        return usluge;
+    public List<Long> getUslugeIds() {
+        return uslugeIds;
     }
 
-    public void setUsluge(List<Long> usluge) {
-        this.usluge = usluge;
+    public void setUslugeIds(List<Long> uslugeIds) {
+        this.uslugeIds = uslugeIds;
     }
 
     public List<String> getUslugeNazivi() {
@@ -121,17 +121,7 @@ public class Rezervacija {
         this.napomena = napomena;
     }
 
-    @Override
-    public String toString() {
-        return "Rezervacija{" +
-                "id=" + id +
-                ", datumVreme=" + datumVreme +
-                ", adresa='" + adresa + '\'' +
-                ", klijent=" + klijent +
-                ", usluge=" + usluge +
-                ", napomena='" + napomena + '\'' +
-                '}';
-    }
 }
+
 
 

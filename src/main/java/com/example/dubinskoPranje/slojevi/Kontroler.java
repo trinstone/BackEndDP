@@ -9,7 +9,10 @@ import com.example.dubinskoPranje.slojevi.servisi.VrsteUslugaServis;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -55,17 +58,15 @@ public class Kontroler {
 
     @PostMapping("/rezervacije")
     public Rezervacija createRezervacija(@RequestBody Rezervacija rezervacija) {
-        // Ensure Klijent is set correctly before saving the reservation
         if (rezervacija.getKlijent() == null || rezervacija.getKlijent().getId() == null) {
             throw new RuntimeException("Klijent ID is missing");
         }
 
-        // Fetch Klijent using the ID provided
         Klijent klijent = klijentServis.findKlijentById(rezervacija.getKlijent().getId());
         if (klijent == null) {
             throw new RuntimeException("Klijent not found with ID: " + rezervacija.getKlijent().getId());
         }
-        rezervacija.setKlijent(klijent);  // Set the Klijent in the reservation object
+        rezervacija.setKlijent(klijent);
 
         return rezervacijaServis.createRezervacija(rezervacija);
     }
@@ -80,11 +81,29 @@ public class Kontroler {
         rezervacijaServis.deleteRezervacija(id);
     }
 
-    // Get reservations by client ID
     @GetMapping("/rezervacije/klijent/{klijentId}")
     public List<Rezervacija> getRezervacijeByKlijentId(@PathVariable Long klijentId) {
-        return rezervacijaServis.getRezervacijeByKlijentId(klijentId);
+        // Fetch the reservations for the given client ID
+        List<Rezervacija> rezervacije = rezervacijaServis.getRezervacijeByKlijentId(klijentId);
+
+        // For each reservation, populate the service names (uslugeNazivi)
+        for (Rezervacija rezervacija : rezervacije) {
+            // Retrieve and map service names from uslugeIds
+            List<String> uslugeNazivi = rezervacija.getUslugeIds().stream()
+                    .map(uslugaId -> vrsteUslugaServis.findVrsteUslugaById(uslugaId)
+                            .map(VrsteUsluga::getIme) // Extract service name if present
+                            .orElse(null)) // Return null if service is not found
+                    .filter(Objects::nonNull) // Remove null values from the list
+                    .collect(Collectors.toList());
+
+            // Set the service names to the reservation object
+            rezervacija.setUslugeNazivi(uslugeNazivi);
+        }
+
+        return rezervacije;
     }
+
+
 
     // ---------- VrsteUsluga Endpoints ----------
     @GetMapping("/usluge")
@@ -113,3 +132,4 @@ public class Kontroler {
         return vrsteUslugaServis.getVrsteUslugaByIds(ids);  // Call the service to get VrsteUsluga by IDs
     }
 }
+

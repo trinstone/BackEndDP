@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface VrsteUslugaRepo extends JpaRepository<VrsteUsluga, Long> {
-    List<VrsteUsluga> findAllByIdIn(List<Long> ids);
+    List<VrsteUsluga> findAllByIdIn(List<Long> ids);  // Correct method signature for fetching multiple records by IDs
 }
 

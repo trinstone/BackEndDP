@@ -1,53 +1,75 @@
 package com.example.dubinskoPranje.slojevi.servisi;
 
 import com.example.dubinskoPranje.entiteti.Rezervacija;
-import com.example.dubinskoPranje.slojevi.repoi.RezervacijaRepo;  // Correct import
+import com.example.dubinskoPranje.entiteti.VrsteUsluga;
+import com.example.dubinskoPranje.slojevi.repoi.RezervacijaRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class RezervacijaServis {
 
-    private final RezervacijaRepo rezervacijaRepo;  // Correcting the variable name
+    private final RezervacijaRepo rezervacijaRepo;
+    private final VrsteUslugaServis vrsteUslugaServis;
 
     @Autowired
-    public RezervacijaServis(RezervacijaRepo rezervacijaRepo) {  // Constructor injection
+    public RezervacijaServis(RezervacijaRepo rezervacijaRepo, VrsteUslugaServis vrsteUslugaServis) {
         this.rezervacijaRepo = rezervacijaRepo;
+        this.vrsteUslugaServis = vrsteUslugaServis;
     }
 
-    // Get all Rezervacije
     public List<Rezervacija> getAllRezervacije() {
-        return rezervacijaRepo.findAll();  // Using rezervacijaRepo
+        List<Rezervacija> rezervacije = rezervacijaRepo.findAll();
+        rezervacije.forEach(this::populateUslugeNazivi);
+        return rezervacije;
     }
 
-    // Create a new Rezervacija
     public Rezervacija createRezervacija(Rezervacija rezervacija) {
-        return rezervacijaRepo.save(rezervacija);  // Using rezervacijaRepo
+        Rezervacija saved = rezervacijaRepo.save(rezervacija);
+        populateUslugeNazivi(saved);
+        return saved;
     }
 
-    // Update an existing Rezervacija
     public Rezervacija updateRezervacija(Long id, Rezervacija rezervacija) {
-        Optional<Rezervacija> existingRezervacija = rezervacijaRepo.findById(id);  // Using rezervacijaRepo
-        if (existingRezervacija.isPresent()) {
-            Rezervacija existing = existingRezervacija.get();
-            existing.setKlijent(rezervacija.getKlijent());  // Update client
-            existing.setUsluge(rezervacija.getUsluge());  // Update services if applicable
-            // Update other fields if needed
-            return rezervacijaRepo.save(existing);  // Using rezervacijaRepo
-        }
-        throw new RuntimeException("Rezervacija not found with id " + id);
+        Rezervacija existing = rezervacijaRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Rezervacija not found with id " + id));
+
+        existing.setKlijent(rezervacija.getKlijent());
+        existing.setUsluge(rezervacija.getUsluge());
+
+        Rezervacija updated = rezervacijaRepo.save(existing);
+        populateUslugeNazivi(updated);
+        return updated;
     }
 
-    // Delete a Rezervacija
     public void deleteRezervacija(Long id) {
-        rezervacijaRepo.deleteById(id);  // Using rezervacijaRepo
+        if (!rezervacijaRepo.existsById(id)) {
+            throw new RuntimeException("Rezervacija with id " + id + " does not exist");
+        }
+        rezervacijaRepo.deleteById(id);
     }
 
-    // Get Rezervacije by Klijent ID
     public List<Rezervacija> getRezervacijeByKlijentId(Long klijentId) {
-        return rezervacijaRepo.findByKlijentId(klijentId);  // Corrected method call
+        List<Rezervacija> rezervacije = rezervacijaRepo.findByKlijentId(klijentId);
+        rezervacije.forEach(this::populateUslugeNazivi);
+        return rezervacije;
+    }
+
+    private void populateUslugeNazivi(Rezervacija rezervacija) {
+        List<Long> uslugeIds = rezervacija.getUsluge();
+        List<String> nazivList = new ArrayList<>();
+        if (uslugeIds != null) {
+            for (Long id : uslugeIds) {
+                VrsteUsluga usluga = vrsteUslugaServis.findVrsteUslugaById(id);
+                if (usluga != null) {
+                    nazivList.add(usluga.getIme());
+                }
+            }
+        }
+        rezervacija.setUslugeNazivi(nazivList); // Set the service names in the reservation
     }
 }

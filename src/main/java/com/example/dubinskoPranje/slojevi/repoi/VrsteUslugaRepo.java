@@ -4,8 +4,10 @@ import com.example.dubinskoPranje.entiteti.VrsteUsluga;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface VrsteUslugaRepo extends JpaRepository<VrsteUsluga, Long> {
-    // Custom query methods (if needed) can be added here
+    List<VrsteUsluga> findAllByIdIn(List<Long> ids);
 }
 

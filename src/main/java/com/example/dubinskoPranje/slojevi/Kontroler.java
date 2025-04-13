@@ -106,4 +106,10 @@ public class Kontroler {
     public void deleteUsluga(@PathVariable Long id) {
         vrsteUslugaServis.deleteVrsteUsluga(id);
     }
+
+    // ---------- New Endpoint for VrsteUsluga by IDs ----------
+    @GetMapping("/usluge/by-ids")
+    public List<VrsteUsluga> getVrsteUslugaByIds(@RequestParam List<Long> ids) {
+        return vrsteUslugaServis.getVrsteUslugaByIds(ids);  // Call the service to get VrsteUsluga by IDs
+    }
 }

@@ -2,7 +2,6 @@ package com.example.dubinskoPranje.entiteti;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -25,39 +24,47 @@ public class Rezervacija {
     private String adresa;
 
     @ManyToOne
-    @JoinColumn(name = "klijent_id")  // Name of the foreign key column
+    @JoinColumn(name = "klijent_id")
     private Klijent klijent;
 
     @ElementCollection
     @CollectionTable(name = "rezervacija_usluga", joinColumns = @JoinColumn(name = "rezervacija_id"))
     @Column(name = "usluga_id")
-    private List<Long> usluge;  // List of ids of VrsteUsluga
+    private List<Long> usluge;  // List of IDs of VrsteUsluga
 
     private String napomena;
+
+    @Transient
+    private List<String> uslugeNazivi; // Transient field for service names
 
     @Version
     private int version;
 
-    public Rezervacija(Long id, LocalDateTime datumVreme, String adresa, Klijent klijent, List<Long> usluge, String napomena) {
+    // Default constructor
+    public Rezervacija() {
+    }
+
+    // Constructor with all fields (including id)
+    public Rezervacija(Long id, LocalDateTime datumVreme, String adresa, Klijent klijent, List<Long> usluge, String napomena, int version) {
         this.id = id;
         this.datumVreme = datumVreme;
         this.adresa = adresa;
         this.klijent = klijent;
         this.usluge = usluge;
         this.napomena = napomena;
+        this.version = version;
     }
 
-    public Rezervacija(LocalDateTime datumVreme, String napomena, String adresa, Klijent klijent, List<Long> usluge) {
+    // Constructor without the 'id' field
+    public Rezervacija(LocalDateTime datumVreme, String adresa, Klijent klijent, List<Long> usluge, String napomena) {
         this.datumVreme = datumVreme;
-        this.napomena = napomena;
         this.adresa = adresa;
         this.klijent = klijent;
         this.usluge = usluge;
+        this.napomena = napomena;
     }
 
-    public Rezervacija() {
-    }
-
+    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -98,6 +105,14 @@ public class Rezervacija {
         this.usluge = usluge;
     }
 
+    public List<String> getUslugeNazivi() {
+        return uslugeNazivi;
+    }
+
+    public void setUslugeNazivi(List<String> uslugeNazivi) {
+        this.uslugeNazivi = uslugeNazivi;
+    }
+
     public String getNapomena() {
         return napomena;
     }
@@ -118,3 +133,5 @@ public class Rezervacija {
                 '}';
     }
 }
+
+

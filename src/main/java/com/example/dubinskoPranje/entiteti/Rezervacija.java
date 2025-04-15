@@ -27,7 +27,6 @@ public class Rezervacija {
     @JoinColumn(name = "klijent_id")
     private Klijent klijent;
 
-    @ElementCollection
     @CollectionTable(name = "rezervacija_usluga", joinColumns = @JoinColumn(name = "rezervacija_id"))
     @Column(name = "usluga_id")
     private List<Long> uslugeIds;  // List of IDs of VrsteUsluga

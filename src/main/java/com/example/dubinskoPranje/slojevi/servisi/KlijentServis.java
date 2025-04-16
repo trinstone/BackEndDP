@@ -31,6 +31,13 @@ public class KlijentServis {
         }
         throw new RuntimeException("Klijent not found with id " + id);
     }
+    public Klijent findKlijentByMejl(String mejl) {
+        Optional<Klijent> klijent = Optional.ofNullable(klijentRepo.findByMejl(mejl));
+        if (klijent.isPresent()) {
+            return klijent.get();
+        }
+        throw new RuntimeException("Klijent not found with mejl " + mejl);
+    }
 
     // Create a new Klijent
     public Klijent createKlijent(Klijent klijent) {

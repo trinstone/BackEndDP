@@ -1,17 +1,18 @@
 package com.example.dubinskoPranje.DTO;
-
-import com.example.dubinskoPranje.entiteti.Klijent;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
 @Builder
+@Data
 public class CreateRezervacija {
-        Long id;
         LocalDateTime datumVreme;
         String adresa ;
-        Klijent klijent;
+        String mejl;
         List<Long> uslugeIds;
         List<String> detaljiUsluga;
         String napomena;

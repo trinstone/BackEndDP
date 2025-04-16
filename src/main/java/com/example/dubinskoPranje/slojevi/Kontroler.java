@@ -1,5 +1,8 @@
 package com.example.dubinskoPranje.slojevi;
 
+import com.example.dubinskoPranje.DTO.CreateRezervacija;
+import com.example.dubinskoPranje.DTO.GetRezervacija;
+import com.example.dubinskoPranje.DTO.UslugaSaDetaljima;
 import com.example.dubinskoPranje.entiteti.Klijent;
 import com.example.dubinskoPranje.entiteti.Rezervacija;
 import com.example.dubinskoPranje.entiteti.VrsteUsluga;
@@ -57,16 +60,24 @@ public class Kontroler {
     }
 
     @PostMapping("/rezervacije")
-    public Rezervacija createRezervacija(@RequestBody Rezervacija rezervacija) {
-        if (rezervacija.getKlijent() == null || rezervacija.getKlijent().getId() == null) {
+    public Rezervacija createRezervacija(@RequestBody CreateRezervacija rezervacijaDTO) {
+        if (rezervacijaDTO.getMejl() == null) {
             throw new RuntimeException("Klijent ID is missing");
         }
 
-        Klijent klijent = klijentServis.findKlijentById(rezervacija.getKlijent().getId());
+        Klijent klijent = klijentServis.findKlijentByMejl(rezervacijaDTO.getMejl());
         if (klijent == null) {
-            throw new RuntimeException("Klijent not found with ID: " + rezervacija.getKlijent().getId());
+            throw new RuntimeException("Klijent not found with ID: " + rezervacijaDTO.getMejl());
         }
-        rezervacija.setKlijent(klijent);
+
+        Rezervacija rezervacija = Rezervacija.builder()
+                .adresa(rezervacijaDTO.getAdresa())
+                .datumVreme(rezervacijaDTO.getDatumVreme())
+                .napomena(rezervacijaDTO.getNapomena())
+                .detaljiUsluga(rezervacijaDTO.getDetaljiUsluga())
+                .uslugeIds(rezervacijaDTO.getUslugeIds())
+                .klijent(klijent)
+                .version(0).build();
 
         return rezervacijaServis.createRezervacija(rezervacija);
     }
@@ -82,7 +93,7 @@ public class Kontroler {
     }
 
     @GetMapping("/rezervacije/klijent/{klijentId}")
-    public List<Rezervacija> getRezervacijeByKlijentId(@PathVariable Long klijentId) {
+    public List<GetRezervacija> getRezervacijeByKlijentId(@PathVariable Long klijentId) {
         // Fetch the reservations for the given client ID
         List<Rezervacija> rezervacije = rezervacijaServis.getRezervacijeByKlijentId(klijentId);
 
@@ -99,8 +110,21 @@ public class Kontroler {
             // Set the service names to the reservation object
             rezervacija.setUslugeNazivi(uslugeNazivi);
         }
+        List<GetRezervacija> gr = rezervacije.stream().map((rezervacija ->{
+            List<UslugaSaDetaljima> l = new ArrayList<>(rezervacija.getUslugeIds().size());
+            for (int i = 0; i < rezervacija.getUslugeIds().size(); i++) {
+                l.add(new UslugaSaDetaljima(rezervacija.getUslugeNazivi().get(i),rezervacija.getDetaljiUsluga().get(i)));
+            }
+            return GetRezervacija.builder()
+                    .id(rezervacija.getId())
+                    .datumVreme(rezervacija.getDatumVreme())
+                    .adresa(rezervacija.getAdresa())
+                    .usluge(l)
+                    .build();
 
-        return rezervacije;
+        })).toList();
+
+        return gr;
     }
 
 

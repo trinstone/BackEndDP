@@ -55,37 +55,19 @@ public class Kontroler {
 
     // ---------- Rezervacija Endpoints ----------
     @GetMapping("/rezervacije")
-    public List<Rezervacija> getAllRezervacije() {
+    public List<GetRezervacija> getAllRezervacije() {
         return rezervacijaServis.getAllRezervacije();
     }
 
     @PostMapping("/rezervacije")
-    public Rezervacija createRezervacija(@RequestBody CreateRezervacija rezervacijaDTO) {
-        if (rezervacijaDTO.getMejl() == null) {
-            throw new RuntimeException("Klijent ID is missing");
-        }
-
-        Klijent klijent = klijentServis.findKlijentByMejl(rezervacijaDTO.getMejl());
-        if (klijent == null) {
-            throw new RuntimeException("Klijent not found with ID: " + rezervacijaDTO.getMejl());
-        }
-
-        Rezervacija rezervacija = Rezervacija.builder()
-                .adresa(rezervacijaDTO.getAdresa())
-                .datumVreme(rezervacijaDTO.getDatumVreme())
-                .napomena(rezervacijaDTO.getNapomena())
-                .detaljiUsluga(rezervacijaDTO.getDetaljiUsluga())
-                .uslugeIds(rezervacijaDTO.getUslugeIds())
-                .klijent(klijent)
-                .version(0).build();
-
-        return rezervacijaServis.createRezervacija(rezervacija);
+    public GetRezervacija createRezervacija(@RequestBody CreateRezervacija rezervacijaDTO) {
+        return rezervacijaServis.createRezervacija(rezervacijaDTO);
     }
-
+/*
     @PutMapping("/rezervacije/{id}")
     public Rezervacija updateRezervacija(@PathVariable Long id, @RequestBody Rezervacija rezervacija) {
         return rezervacijaServis.updateRezervacija(id, rezervacija);
-    }
+    }*/
 
     @DeleteMapping("/rezervacije/{id}")
     public void deleteRezervacija(@PathVariable Long id) {
@@ -94,37 +76,7 @@ public class Kontroler {
 
     @GetMapping("/rezervacije/klijent/{klijentId}")
     public List<GetRezervacija> getRezervacijeByKlijentId(@PathVariable Long klijentId) {
-        // Fetch the reservations for the given client ID
-        List<Rezervacija> rezervacije = rezervacijaServis.getRezervacijeByKlijentId(klijentId);
-
-        // For each reservation, populate the service names (uslugeNazivi)
-        for (Rezervacija rezervacija : rezervacije) {
-            // Retrieve and map service names from uslugeIds
-            List<String> uslugeNazivi = rezervacija.getUslugeIds().stream()
-                    .map(uslugaId -> vrsteUslugaServis.findVrsteUslugaById(uslugaId)
-                            .map(VrsteUsluga::getIme) // Extract service name if present
-                            .orElse(null)) // Return null if service is not found
-                    .filter(Objects::nonNull) // Remove null values from the list
-                    .collect(Collectors.toList());
-
-            // Set the service names to the reservation object
-            rezervacija.setUslugeNazivi(uslugeNazivi);
-        }
-        List<GetRezervacija> gr = rezervacije.stream().map((rezervacija ->{
-            List<UslugaSaDetaljima> l = new ArrayList<>(rezervacija.getUslugeIds().size());
-            for (int i = 0; i < rezervacija.getUslugeIds().size(); i++) {
-                l.add(new UslugaSaDetaljima(rezervacija.getUslugeNazivi().get(i),rezervacija.getDetaljiUsluga().get(i)));
-            }
-            return GetRezervacija.builder()
-                    .id(rezervacija.getId())
-                    .datumVreme(rezervacija.getDatumVreme())
-                    .adresa(rezervacija.getAdresa())
-                    .usluge(l)
-                    .build();
-
-        })).toList();
-
-        return gr;
+        return rezervacijaServis.getRezervacijeByKlijentId(klijentId);
     }
 
 

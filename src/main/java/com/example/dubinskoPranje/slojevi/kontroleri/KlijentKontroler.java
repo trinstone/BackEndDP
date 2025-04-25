@@ -1,5 +1,7 @@
 package com.example.dubinskoPranje.slojevi.kontroleri;
 
+import com.example.dubinskoPranje.DTO.GetKlijent;
+import com.example.dubinskoPranje.DTO.SetKlijent;
 import com.example.dubinskoPranje.entiteti.Klijent;
 import com.example.dubinskoPranje.slojevi.servisi.KlijentServis;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +20,17 @@ public class KlijentKontroler {
     }
 
     @GetMapping("/")
-    public List<Klijent> getAllKlijenti() {
+    public List<GetKlijent> getAllKlijenti() {
         return klijentServis.getAllKlijenti();
     }
 
     @PostMapping("/")
-    public Klijent createKlijent(@RequestBody Klijent klijent) {
+    public GetKlijent createKlijent(@RequestBody SetKlijent klijent) {
         return klijentServis.createKlijent(klijent);
     }
 
     @PutMapping("/{id}")
-    public Klijent updateKlijent(@PathVariable Long id, @RequestBody Klijent klijent) {
+    public GetKlijent updateKlijent(@PathVariable Long id, @RequestBody SetKlijent klijent) {
         return klijentServis.updateKlijent(id, klijent);
     }
 

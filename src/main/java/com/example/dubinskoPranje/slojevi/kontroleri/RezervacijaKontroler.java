@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/rezervacije")
 public class RezervacijaKontroler {
 
     private final RezervacijaServis rezervacijaServis;
@@ -18,27 +18,27 @@ public class RezervacijaKontroler {
     }
 
     // ---------- Rezervacija Endpoints ----------
-    @GetMapping("/rezervacije")
+    @GetMapping("/")
     public List<GetRezervacija> getAllRezervacije() {
         return rezervacijaServis.getAllRezervacije();
     }
 
-    @PostMapping("/rezervacije")
+    @PostMapping("/")
     public GetRezervacija createRezervacija(@RequestBody CreateRezervacija rezervacijaDTO) {
         return rezervacijaServis.createRezervacija(rezervacijaDTO);
     }
 /*
-    @PutMapping("/rezervacije/{id}")
+    @PutMapping("/{id}")
     public Rezervacija updateRezervacija(@PathVariable Long id, @RequestBody Rezervacija rezervacija) {
         return rezervacijaServis.updateRezervacija(id, rezervacija);
     }*/
 
-    @DeleteMapping("/rezervacije/{id}")
+    @DeleteMapping("/{id}")
     public void deleteRezervacija(@PathVariable Long id) {
         rezervacijaServis.deleteRezervacija(id);
     }
 
-    @GetMapping("/rezervacije/klijent/{klijentId}")
+    @GetMapping("/klijent/{klijentId}")
     public List<GetRezervacija> getRezervacijeByKlijentId(@PathVariable Long klijentId) {
         return rezervacijaServis.getRezervacijeByKlijentId(klijentId);
     }

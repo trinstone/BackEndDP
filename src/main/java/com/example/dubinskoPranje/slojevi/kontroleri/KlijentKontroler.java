@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/klijenti")
 public class KlijentKontroler {
     private final KlijentServis klijentServis;
 
@@ -17,22 +17,22 @@ public class KlijentKontroler {
         this.klijentServis = klijentServis;
     }
 
-    @GetMapping("/klijenti")
+    @GetMapping("/")
     public List<Klijent> getAllKlijenti() {
         return klijentServis.getAllKlijenti();
     }
 
-    @PostMapping("/klijenti")
+    @PostMapping("/")
     public Klijent createKlijent(@RequestBody Klijent klijent) {
         return klijentServis.createKlijent(klijent);
     }
 
-    @PutMapping("/klijenti/{id}")
+    @PutMapping("/{id}")
     public Klijent updateKlijent(@PathVariable Long id, @RequestBody Klijent klijent) {
         return klijentServis.updateKlijent(id, klijent);
     }
 
-    @DeleteMapping("/klijenti/{id}")
+    @DeleteMapping("/{id}")
     public void deleteKlijent(@PathVariable Long id) {
         klijentServis.deleteKlijent(id);
     }

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/usluge")
 public class VrsteUslugaKontroler {
 
     private final VrsteUslugaServis vrsteUslugaServis;
@@ -17,28 +17,28 @@ public class VrsteUslugaKontroler {
     }
 
     // ---------- VrsteUsluga Endpoints ----------
-    @GetMapping("/usluge")
+    @GetMapping("/")
     public List<VrsteUsluga> getAllUsluge() {
         return vrsteUslugaServis.getAllVrsteUsluga();
     }
 
-    @PostMapping("/usluge")
+    @PostMapping("/")
     public VrsteUsluga createUsluga(@RequestBody VrsteUsluga usluga) {
         return vrsteUslugaServis.createVrsteUsluga(usluga);
     }
 
-    @PutMapping("/usluge/{id}")
+    @PutMapping("/{id}")
     public VrsteUsluga updateUsluga(@PathVariable Long id, @RequestBody VrsteUsluga usluga) {
         return vrsteUslugaServis.updateVrsteUsluga(id, usluga);
     }
 
-    @DeleteMapping("/usluge/{id}")
+    @DeleteMapping("/{id}")
     public void deleteUsluga(@PathVariable Long id) {
         vrsteUslugaServis.deleteVrsteUsluga(id);
     }
 
     // ---------- New Endpoint for VrsteUsluga by IDs ----------
-    @GetMapping("/usluge/by-ids")
+    @GetMapping("/by-ids")
     public List<VrsteUsluga> getVrsteUslugaByIds(@RequestParam List<Long> ids) {
         return vrsteUslugaServis.getVrsteUslugaByIds(ids);  // Call the service to get VrsteUsluga by IDs
     }

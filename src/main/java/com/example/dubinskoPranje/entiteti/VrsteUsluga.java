@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @Table
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class VrsteUsluga {
 
     @Id
@@ -23,7 +25,8 @@ public class VrsteUsluga {
     @Version
     private int version;
 
-    public VrsteUsluga(String ime, String opis, Integer cena) {
+    public VrsteUsluga(String ime, String opis, Integer cena)
+    {
         this.ime = ime;
         this.opis = opis;
         this.cena = cena;

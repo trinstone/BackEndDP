@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Klijent extends Osoba {
+public class Radnik extends Osoba {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +22,7 @@ public class Klijent extends Osoba {
 
     @Override
     public String toString() {
-        return "Klijent{" +
+        return "Radnik{" +
                 "id=" + id +
                 ", ime='" + ime + '\'' +
                 ", prezime='" + prezime + '\'' +
@@ -32,4 +32,3 @@ public class Klijent extends Osoba {
                 '}';
     }
 }
-

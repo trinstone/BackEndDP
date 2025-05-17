@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/radnici")
+@RequestMapping("/api/radnici/")
 public class RadnikKontroler {
 
     private final RadnikServis radnikServis;
@@ -29,7 +29,7 @@ public class RadnikKontroler {
         return radnikServis.createRadnik(setRadnik);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public void deleteRadnik(@PathVariable Long id) {
         radnikServis.deleteRadnik(id);
     }
